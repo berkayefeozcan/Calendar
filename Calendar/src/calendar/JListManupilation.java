@@ -113,6 +113,7 @@ public class JListManupilation extends javax.swing.JFrame {
         addNewEventButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setAlwaysOnTop(true);
         setBackground(new java.awt.Color(210, 241, 240));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setResizable(false);

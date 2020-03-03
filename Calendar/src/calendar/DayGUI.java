@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+
 import javax.swing.*;
 
 /**
@@ -162,6 +163,7 @@ public class DayGUI extends javax.swing.JFrame {
                 return strings[i];
             }
         });
+        
     }
 
     public void setGoalsElementsToJList(JList<String> list, String filePath) {
@@ -202,41 +204,100 @@ public class DayGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        dailyGoalsLabel = new javax.swing.JLabel();
-        eventLabel = new javax.swing.JLabel();
-        thoughtsLabel = new javax.swing.JLabel();
-        editButton = new javax.swing.JButton();
-        thoughtsEditScrollPane = new javax.swing.JScrollPane();
-        thoughtsEditTextArea = new javax.swing.JTextArea();
-        thoughtsScrollPane = new javax.swing.JScrollPane();
-        thoughtsTextArea = new javax.swing.JTextArea();
-        saveButton = new javax.swing.JButton();
-        dailyGoalsListScrollPane = new javax.swing.JScrollPane();
-        dailyGoalsJList = new javax.swing.JList<>();
+        jPanel1 = new javax.swing.JPanel();
+        removeEvntButton = new javax.swing.JButton();
+        removeGoalsButton = new javax.swing.JButton();
+        addEventButton = new javax.swing.JButton();
         eventsListScrollPane = new javax.swing.JScrollPane();
         eventsJList = new javax.swing.JList<>();
         addGoalsButton = new javax.swing.JButton();
-        removeGoalsButton = new javax.swing.JButton();
-        addEventButton = new javax.swing.JButton();
-        removeEvntButton = new javax.swing.JButton();
+        dailyGoalsListScrollPane = new javax.swing.JScrollPane();
+        dailyGoalsJList = new javax.swing.JList<>();
+        thoughtsScrollPane = new javax.swing.JScrollPane();
+        thoughtsTextArea = new javax.swing.JTextArea();
+        thoughtsEditScrollPane = new javax.swing.JScrollPane();
+        thoughtsEditTextArea = new javax.swing.JTextArea();
+        editButton = new javax.swing.JButton();
+        thoughtsLabel = new javax.swing.JLabel();
+        eventLabel = new javax.swing.JLabel();
+        dailyGoalsLabel = new javax.swing.JLabel();
+        saveButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setAlwaysOnTop(true);
+        setAutoRequestFocus(false);
+        setBackground(new java.awt.Color(211, 134, 78));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setMaximumSize(new java.awt.Dimension(1000, 600));
-        setMinimumSize(new java.awt.Dimension(1000, 600));
+        setMinimumSize(new java.awt.Dimension(1100, 600));
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        dailyGoalsLabel.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
-        dailyGoalsLabel.setText("Daily Goals");
-        getContentPane().add(dailyGoalsLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 10, -1, -1));
+        jPanel1.setBackground(new java.awt.Color(230, 159, 93));
+        jPanel1.setMinimumSize(new java.awt.Dimension(1070, 450));
+        jPanel1.setPreferredSize(new java.awt.Dimension(1070, 450));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        eventLabel.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
-        eventLabel.setText("Events");
-        getContentPane().add(eventLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 10, -1, -1));
+        removeEvntButton.setText("Remove Events");
+        jPanel1.add(removeEvntButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 450, -1, -1));
 
-        thoughtsLabel.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
-        thoughtsLabel.setText("Thoughts ");
-        getContentPane().add(thoughtsLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 10, -1, -1));
+        removeGoalsButton.setText("Remove goals");
+        jPanel1.add(removeGoalsButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 450, -1, -1));
+
+        addEventButton.setText("Add Events");
+        addEventButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addEventButtonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(addEventButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 450, -1, -1));
+
+        eventsJList.setBackground(new java.awt.Color(242, 238, 203));
+        eventsJList.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        eventsListScrollPane.setViewportView(eventsJList);
+
+        jPanel1.add(eventsListScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 40, 310, 400));
+
+        addGoalsButton.setText("Add goals");
+        addGoalsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addGoalsButtonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(addGoalsButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 450, -1, -1));
+
+        dailyGoalsJList.setBackground(new java.awt.Color(242, 238, 203));
+        dailyGoalsJList.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        dailyGoalsListScrollPane.setViewportView(dailyGoalsJList);
+
+        jPanel1.add(dailyGoalsListScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 40, 290, 400));
+
+        thoughtsScrollPane.setBackground(new java.awt.Color(242, 238, 203));
+
+        thoughtsTextArea.setEditable(false);
+        thoughtsTextArea.setColumns(20);
+        thoughtsTextArea.setRows(5);
+        thoughtsTextArea.setText("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        thoughtsScrollPane.setViewportView(thoughtsTextArea);
+
+        jPanel1.add(thoughtsScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 40, 320, 400));
+
+        thoughtsEditScrollPane.setBackground(new java.awt.Color(242, 238, 203));
+
+        thoughtsEditTextArea.setBackground(new java.awt.Color(242, 238, 203));
+        thoughtsEditTextArea.setColumns(20);
+        thoughtsEditTextArea.setRows(5);
+        thoughtsEditTextArea.setText("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        thoughtsEditScrollPane.setViewportView(thoughtsEditTextArea);
+
+        jPanel1.add(thoughtsEditScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 40, 320, 400));
 
         editButton.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
         editButton.setText("Edit");
@@ -245,22 +306,22 @@ public class DayGUI extends javax.swing.JFrame {
                 editButtonActionPerformed(evt);
             }
         });
-        getContentPane().add(editButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 460, -1, -1));
+        jPanel1.add(editButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 460, -1, -1));
 
-        thoughtsEditTextArea.setColumns(20);
-        thoughtsEditTextArea.setRows(5);
-        thoughtsEditTextArea.setText("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-        thoughtsEditScrollPane.setViewportView(thoughtsEditTextArea);
+        thoughtsLabel.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
+        thoughtsLabel.setForeground(new java.awt.Color(255, 255, 255));
+        thoughtsLabel.setText("Thoughts ");
+        jPanel1.add(thoughtsLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 10, -1, -1));
 
-        getContentPane().add(thoughtsEditScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 40, 320, 400));
+        eventLabel.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
+        eventLabel.setForeground(new java.awt.Color(255, 255, 255));
+        eventLabel.setText("Events");
+        jPanel1.add(eventLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 10, -1, -1));
 
-        thoughtsTextArea.setEditable(false);
-        thoughtsTextArea.setColumns(20);
-        thoughtsTextArea.setRows(5);
-        thoughtsTextArea.setText("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-        thoughtsScrollPane.setViewportView(thoughtsTextArea);
-
-        getContentPane().add(thoughtsScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 40, 320, 400));
+        dailyGoalsLabel.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
+        dailyGoalsLabel.setForeground(new java.awt.Color(255, 255, 255));
+        dailyGoalsLabel.setText("Daily Goals");
+        jPanel1.add(dailyGoalsLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 10, -1, -1));
 
         saveButton.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
         saveButton.setText("Save");
@@ -269,47 +330,9 @@ public class DayGUI extends javax.swing.JFrame {
                 saveButtonActionPerformed(evt);
             }
         });
-        getContentPane().add(saveButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 460, 100, -1));
+        jPanel1.add(saveButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 460, 100, -1));
 
-        dailyGoalsJList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        dailyGoalsListScrollPane.setViewportView(dailyGoalsJList);
-
-        getContentPane().add(dailyGoalsListScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 40, 270, 400));
-
-        eventsJList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        eventsListScrollPane.setViewportView(eventsJList);
-
-        getContentPane().add(eventsListScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 40, 310, 400));
-
-        addGoalsButton.setText("Add goals");
-        addGoalsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addGoalsButtonActionPerformed(evt);
-            }
-        });
-        getContentPane().add(addGoalsButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 450, -1, -1));
-
-        removeGoalsButton.setText("Remove goals");
-        getContentPane().add(removeGoalsButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 450, -1, -1));
-
-        addEventButton.setText("Add Events");
-        addEventButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addEventButtonActionPerformed(evt);
-            }
-        });
-        getContentPane().add(addEventButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 450, -1, -1));
-
-        removeEvntButton.setText("Remove Events");
-        getContentPane().add(removeEvntButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 450, -1, -1));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1120, 520));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -371,6 +394,7 @@ public class DayGUI extends javax.swing.JFrame {
     private javax.swing.JLabel eventLabel;
     private javax.swing.JList<String> eventsJList;
     private javax.swing.JScrollPane eventsListScrollPane;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JButton removeEvntButton;
     private javax.swing.JButton removeGoalsButton;
     private javax.swing.JButton saveButton;

@@ -28,14 +28,46 @@ public class MainGUI extends javax.swing.JFrame {
             saturday2, sunday2, monday3, tuesday3, wednesday3, thursday3, friday3,
             saturday3, sunday3, monday4, tuesday4, wednesday4, thursday4, friday4,
             saturday4, sunday4, monday5, tuesday5, wednesday5, thursday5, friday5,
-            saturday5, sunday5, monday4, tuesday4, wednesday4, thursday4, friday4,
-            saturday4, sunday6, monday6, tuesday6, wednesday6, thursday6, friday6,
+            saturday5, sunday5, monday6, tuesday6, wednesday6, thursday6, friday6,
             saturday6, sunday6};
+
+        for (JButton b : listOfDays) {
+            b.setBackground(new java.awt.Color(250, 128, 0));
+        }
         this.listofDays = listOfDays.clone();
         prepareDaysInterface(listOfDays);
-        todayDateLabel.setText(currentDate.getDayNum()+"/"+currentDate.getCurrentMonth()+"/"+currentDate.getCurrentYear());
-        
+        todayDateLabel.setText(currentDate.getDayNum() + "/" + currentDate.getCurrentMonth() + "/" + currentDate.getCurrentYear());
 
+        setTodayGoalsAndEvents();
+
+    }
+
+    private void setTodayGoalsAndEvents() {
+        int i;
+        ArrayList<String> goalsArrayList = FileWriterAndReader.readStringArray(
+                currentDate.getDayNum() + currentDate.getMonth() + currentDate.getYear()
+                + "goals.txt");
+
+        ArrayList<String> eventsArrayList = FileWriterAndReader.readStringArray(
+                currentDate.getDayNum() + currentDate.getMonth() + currentDate.getYear()
+                + "events.txt");
+
+        String goals = "";
+        String events = "";
+
+        for (i = 0; i < goalsArrayList.size(); i++) {
+            goals += "---->  ";
+            goals += goalsArrayList.get(i);
+            goals += "\n\n";
+        }
+        goalsTextArea.setText(goals);
+
+        for (i = 0; i < eventsArrayList.size(); i++) {
+            events += "---->  ";
+            events += eventsArrayList.get(i);
+            events += "\n\n";
+        }
+        eventsTextArea.setText(events);
     }
 
     public void prepareDaysInterface(JButton[] listOfDays) {
@@ -93,15 +125,22 @@ public class MainGUI extends javax.swing.JFrame {
         }
         clearButtonsName(listOfDays); // clearing button's text
         setButtonsName(buttons, currentDate); // Setting buttons name 
-        monthLabel.setText(currentDate.getMonth()+"/"+currentDate.getYear());
-        
+        monthLabel.setText(currentDate.getMonth() + "/" + currentDate.getYear());
+
+        if (currentDate.getCurrentDate().equals(currentDate.getDate())) {
+
+            monthLabel.setForeground(Color.red); // if current date equals date funtcion set month label red color.
+        } else {
+            monthLabel.setForeground(Color.black);
+        }
+
     }
 
     private void clearButtonsName(JButton[] buttons) {
 
         for (JButton b : buttons) {
             b.setText("");
-            b.setForeground(Color.black);
+            b.setForeground(Color.white);
         }
     }
 
@@ -115,7 +154,8 @@ public class MainGUI extends javax.swing.JFrame {
             button.get(i).setFont(new Font("Arial", Font.PLAIN, 40)); // set font
 
         }
-        if (currentDate.getCurrentMonth().equals(currentDate.getMonth())) {
+        if (currentDate.getCurrentMonth().equals(currentDate.getMonth())
+                && currentDate.getCurrentYear().equals(currentDate.getYear())) {
             button.get(dayNum - 1).setForeground(Color.red);
         }
 
@@ -126,7 +166,7 @@ public class MainGUI extends javax.swing.JFrame {
         String day = button.getText();
 
         if (!day.equals("")) {
-            DayGUI gui = new DayGUI(day, currentDate.getMonth(), currentDate.getYear());
+            DayGUI gui = new DayGUI(currentDate.getDayNum(), currentDate.getMonth(), currentDate.getYear());
             gui.buildGoals();
         }
 
@@ -141,11 +181,7 @@ public class MainGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        todayPanel = new javax.swing.JPanel();
-        todayLabel = new javax.swing.JLabel();
-        todayDateLabel = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        CalendarPanel = new javax.swing.JPanel();
         daysOfMonth = new javax.swing.JPanel();
         sunday3 = new javax.swing.JButton();
         monday2 = new javax.swing.JButton();
@@ -196,9 +232,24 @@ public class MainGUI extends javax.swing.JFrame {
         wednesday6 = new javax.swing.JButton();
         tuesday6 = new javax.swing.JButton();
         saturday6 = new javax.swing.JButton();
+        todayPanel = new javax.swing.JPanel();
+        todayDateLabel = new javax.swing.JLabel();
+        eventsLabel = new javax.swing.JLabel();
+        goalsLabel = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        eventsTextArea = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        goalsTextArea = new javax.swing.JTextArea();
+        todayTitlePanel = new javax.swing.JPanel();
+        todayLabel = new javax.swing.JLabel();
+        nextPrevTitle = new javax.swing.JPanel();
         monthLabel = new javax.swing.JLabel();
-        monthNextButton = new javax.swing.JButton();
         monthPrevButton = new javax.swing.JButton();
+        monthNextButton = new javax.swing.JButton();
+        MENU_PANEL = new javax.swing.JPanel();
+        calendarButton = new javax.swing.JButton();
+        booksButton = new javax.swing.JButton();
+        booksPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Calendar");
@@ -207,49 +258,16 @@ public class MainGUI extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(1920, 1080));
         setPreferredSize(new java.awt.Dimension(1920, 1080));
         setResizable(false);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        todayPanel.setBackground(new java.awt.Color(153, 255, 255));
+        CalendarPanel.setBackground(new java.awt.Color(250, 250, 250));
+        CalendarPanel.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                CalendarPanelKeyPressed(evt);
+            }
+        });
 
-        todayLabel.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
-        todayLabel.setText("TODAY");
-
-        todayDateLabel.setFont(new java.awt.Font("Ubuntu", 2, 24)); // NOI18N
-        todayDateLabel.setText("Today Date ");
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
-
-        javax.swing.GroupLayout todayPanelLayout = new javax.swing.GroupLayout(todayPanel);
-        todayPanel.setLayout(todayPanelLayout);
-        todayPanelLayout.setHorizontalGroup(
-            todayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(todayPanelLayout.createSequentialGroup()
-                .addGroup(todayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(todayPanelLayout.createSequentialGroup()
-                        .addGap(159, 159, 159)
-                        .addComponent(todayDateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(todayPanelLayout.createSequentialGroup()
-                        .addGap(93, 93, 93)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(todayPanelLayout.createSequentialGroup()
-                        .addGap(190, 190, 190)
-                        .addComponent(todayLabel)))
-                .addContainerGap(100, Short.MAX_VALUE))
-        );
-        todayPanelLayout.setVerticalGroup(
-            todayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(todayPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(todayLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(4, 4, 4)
-                .addComponent(todayDateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        daysOfMonth.setBackground(new java.awt.Color(255, 0, 0));
+        daysOfMonth.setBackground(new java.awt.Color(64, 64, 64));
 
         sunday3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -420,31 +438,32 @@ public class MainGUI extends javax.swing.JFrame {
         });
 
         firstDay.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
-        firstDay.setForeground(new java.awt.Color(0, 0, 0));
+        firstDay.setForeground(new java.awt.Color(255, 255, 255));
         firstDay.setText("Monday");
 
+        secondDay.setBackground(new java.awt.Color(255, 255, 255));
         secondDay.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
-        secondDay.setForeground(new java.awt.Color(0, 0, 0));
+        secondDay.setForeground(new java.awt.Color(255, 255, 255));
         secondDay.setText("Tuesday");
 
         thirdDay.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
-        thirdDay.setForeground(new java.awt.Color(0, 0, 0));
+        thirdDay.setForeground(new java.awt.Color(255, 255, 255));
         thirdDay.setText("Wednesday");
 
         forthDay.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
-        forthDay.setForeground(new java.awt.Color(0, 0, 0));
+        forthDay.setForeground(new java.awt.Color(255, 255, 255));
         forthDay.setText("Thursday");
 
         fifthDay.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
-        fifthDay.setForeground(new java.awt.Color(0, 0, 0));
+        fifthDay.setForeground(new java.awt.Color(255, 255, 255));
         fifthDay.setText("Friday");
 
         sixthDay.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
-        sixthDay.setForeground(new java.awt.Color(0, 0, 0));
+        sixthDay.setForeground(new java.awt.Color(255, 255, 255));
         sixthDay.setText("Sunday");
 
         ninethday.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
-        ninethday.setForeground(new java.awt.Color(0, 0, 0));
+        ninethday.setForeground(new java.awt.Color(255, 255, 255));
         ninethday.setText("Saturday");
 
         monday5.addActionListener(new java.awt.event.ActionListener() {
@@ -535,192 +554,267 @@ public class MainGUI extends javax.swing.JFrame {
         daysOfMonth.setLayout(daysOfMonthLayout);
         daysOfMonthLayout.setHorizontalGroup(
             daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(daysOfMonthLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, daysOfMonthLayout.createSequentialGroup()
+                .addGap(0, 35, Short.MAX_VALUE)
                 .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(daysOfMonthLayout.createSequentialGroup()
+                        .addComponent(monday6, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tuesday6, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(wednesday6, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(thursday6, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(friday6, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(saturday6, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(sunday6, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(daysOfMonthLayout.createSequentialGroup()
                         .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(monday1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(monday4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(monday3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(monday2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(monday5, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(daysOfMonthLayout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(firstDay)
-                                .addGap(38, 38, 38)
-                                .addComponent(secondDay)
-                                .addGap(24, 24, 24)
-                                .addComponent(thirdDay)
-                                .addGap(18, 18, 18)
-                                .addComponent(forthDay)
-                                .addGap(38, 38, 38)
-                                .addComponent(fifthDay)
-                                .addGap(42, 42, 42)
-                                .addComponent(ninethday)
-                                .addGap(33, 33, 33)
-                                .addComponent(sixthDay))
-                            .addGroup(daysOfMonthLayout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(monday1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(monday4, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(monday3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(monday2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(monday5, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(tuesday4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(daysOfMonthLayout.createSequentialGroup()
-                                        .addComponent(tuesday1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(wednesday1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(thursday1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(friday1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(saturday1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(sunday1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(daysOfMonthLayout.createSequentialGroup()
-                                        .addComponent(tuesday4, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(wednesday4, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(thursday4, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(friday4, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(saturday4, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(sunday4, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(daysOfMonthLayout.createSequentialGroup()
-                                        .addComponent(tuesday3, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(wednesday3, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(thursday3, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(friday3, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(saturday3, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(sunday3, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, daysOfMonthLayout.createSequentialGroup()
-                                        .addComponent(tuesday2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(wednesday2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(thursday2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(friday2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(saturday2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(sunday2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(daysOfMonthLayout.createSequentialGroup()
-                                        .addComponent(tuesday5, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(wednesday5, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(thursday5, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(friday5, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(saturday5, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(sunday5, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, daysOfMonthLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(monday6, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tuesday6, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(wednesday6, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(thursday6, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(friday6, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(saturday6, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sunday6, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                                .addComponent(wednesday4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(thursday4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(friday4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(saturday4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sunday4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(daysOfMonthLayout.createSequentialGroup()
+                                .addComponent(tuesday3, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(wednesday3, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(thursday3, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(friday3, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(saturday3, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sunday3, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, daysOfMonthLayout.createSequentialGroup()
+                                .addComponent(tuesday2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(wednesday2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(thursday2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(friday2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(saturday2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sunday2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(daysOfMonthLayout.createSequentialGroup()
+                                .addComponent(tuesday5, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(wednesday5, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(thursday5, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(friday5, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(saturday5, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sunday5, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(daysOfMonthLayout.createSequentialGroup()
+                                .addComponent(tuesday1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(wednesday1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(thursday1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(friday1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(saturday1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sunday1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(36, 36, 36))
+            .addGroup(daysOfMonthLayout.createSequentialGroup()
+                .addGap(46, 46, 46)
+                .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(daysOfMonthLayout.createSequentialGroup()
+                        .addGap(225, 225, 225)
+                        .addComponent(thirdDay)
+                        .addGap(37, 37, 37)
+                        .addComponent(forthDay)
+                        .addGap(52, 52, 52)
+                        .addComponent(fifthDay)
+                        .addGap(50, 50, 50)
+                        .addComponent(ninethday)
+                        .addGap(56, 56, 56)
+                        .addComponent(sixthDay))
+                    .addGroup(daysOfMonthLayout.createSequentialGroup()
+                        .addComponent(firstDay)
+                        .addGap(45, 45, 45)
+                        .addComponent(secondDay)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         daysOfMonthLayout.setVerticalGroup(
             daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, daysOfMonthLayout.createSequentialGroup()
-                .addGap(33, 33, 33)
+                .addGap(18, 18, 18)
                 .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(firstDay)
                     .addComponent(secondDay)
                     .addComponent(thirdDay)
                     .addComponent(forthDay)
                     .addComponent(fifthDay)
-                    .addComponent(sixthDay)
-                    .addComponent(ninethday))
-                .addGap(18, 18, 18)
+                    .addComponent(ninethday)
+                    .addComponent(sixthDay))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(monday1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saturday1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(friday1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(thursday1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tuesday1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(wednesday1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sunday1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(monday2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saturday2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(friday2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(thursday2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tuesday2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(wednesday2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sunday2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(monday3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saturday3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(friday3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(thursday3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tuesday3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(wednesday3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sunday3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(monday4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saturday4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(friday4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(thursday4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tuesday4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(wednesday4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sunday4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(monday5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saturday5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(friday5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(thursday5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tuesday5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(wednesday5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sunday5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(monday1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(saturday1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(friday1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(thursday1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tuesday1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(wednesday1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sunday1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(monday6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saturday6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(friday6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(thursday6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tuesday6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(wednesday6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sunday6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(43, Short.MAX_VALUE))
+                    .addComponent(saturday2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(friday2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(thursday2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tuesday2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(wednesday2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sunday2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(monday2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(monday3, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(saturday3, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(friday3, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(thursday3, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tuesday3, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(wednesday3, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sunday3, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(monday4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(saturday4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(friday4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(thursday4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tuesday4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(wednesday4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sunday4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(monday5, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(saturday5, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(friday5, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(thursday5, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tuesday5, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(wednesday5, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sunday5, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(daysOfMonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(sunday6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(monday6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(tuesday6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(wednesday6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(thursday6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(friday6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(saturday6, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
-        monthLabel.setFont(new java.awt.Font("Ubuntu", 3, 18)); // NOI18N
-        monthLabel.setText("                  Month");
+        todayPanel.setBackground(new java.awt.Color(153, 255, 255));
 
-        monthNextButton.setText("Next");
-        monthNextButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                monthNextButtonActionPerformed(evt);
-            }
-        });
+        todayDateLabel.setFont(new java.awt.Font("Ubuntu", 2, 24)); // NOI18N
+        todayDateLabel.setText("    Today Date");
+
+        eventsLabel.setFont(new java.awt.Font("DejaVu Sans", 0, 18)); // NOI18N
+        eventsLabel.setText("--EVENTS--");
+
+        goalsLabel.setFont(new java.awt.Font("DejaVu Sans", 0, 18)); // NOI18N
+        goalsLabel.setText("--GOALS--");
+
+        eventsTextArea.setEditable(false);
+        eventsTextArea.setColumns(25);
+        eventsTextArea.setRows(5);
+        jScrollPane1.setViewportView(eventsTextArea);
+
+        goalsTextArea.setEditable(false);
+        goalsTextArea.setColumns(25);
+        goalsTextArea.setRows(5);
+        jScrollPane2.setViewportView(goalsTextArea);
+
+        todayLabel.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
+        todayLabel.setText("TODAY");
+
+        javax.swing.GroupLayout todayTitlePanelLayout = new javax.swing.GroupLayout(todayTitlePanel);
+        todayTitlePanel.setLayout(todayTitlePanelLayout);
+        todayTitlePanelLayout.setHorizontalGroup(
+            todayTitlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(todayTitlePanelLayout.createSequentialGroup()
+                .addGap(153, 153, 153)
+                .addComponent(todayLabel)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        todayTitlePanelLayout.setVerticalGroup(
+            todayTitlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, todayTitlePanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(todayLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22))
+        );
+
+        javax.swing.GroupLayout todayPanelLayout = new javax.swing.GroupLayout(todayPanel);
+        todayPanel.setLayout(todayPanelLayout);
+        todayPanelLayout.setHorizontalGroup(
+            todayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(todayTitlePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(todayPanelLayout.createSequentialGroup()
+                .addGroup(todayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(todayPanelLayout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addGroup(todayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, todayPanelLayout.createSequentialGroup()
+                                .addGap(78, 78, 78)
+                                .addComponent(eventsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(93, 93, 93))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(todayPanelLayout.createSequentialGroup()
+                                .addGap(91, 91, 91)
+                                .addComponent(goalsLabel))))
+                    .addGroup(todayPanelLayout.createSequentialGroup()
+                        .addGap(103, 103, 103)
+                        .addComponent(todayDateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(55, Short.MAX_VALUE))
+        );
+        todayPanelLayout.setVerticalGroup(
+            todayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(todayPanelLayout.createSequentialGroup()
+                .addComponent(todayTitlePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(todayDateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(eventsLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(47, 47, 47)
+                .addComponent(goalsLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(88, Short.MAX_VALUE))
+        );
+
+        monthLabel.setFont(new java.awt.Font("Ubuntu", 3, 24)); // NOI18N
+        monthLabel.setText("       Month");
 
         monthPrevButton.setText("Prev");
         monthPrevButton.addActionListener(new java.awt.event.ActionListener() {
@@ -729,40 +823,114 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(430, 430, 430)
-                        .addComponent(daysOfMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(todayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(535, 535, 535)
-                        .addComponent(monthPrevButton, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(147, 147, 147)
-                        .addComponent(monthLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(119, 119, 119)
-                        .addComponent(monthNextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(264, Short.MAX_VALUE))
+        monthNextButton.setText("Next");
+        monthNextButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                monthNextButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout nextPrevTitleLayout = new javax.swing.GroupLayout(nextPrevTitle);
+        nextPrevTitle.setLayout(nextPrevTitleLayout);
+        nextPrevTitleLayout.setHorizontalGroup(
+            nextPrevTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(nextPrevTitleLayout.createSequentialGroup()
+                .addGap(107, 107, 107)
+                .addComponent(monthPrevButton, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 184, Short.MAX_VALUE)
+                .addComponent(monthLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(165, 165, 165)
+                .addComponent(monthNextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(101, 101, 101))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(monthLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
+        nextPrevTitleLayout.setVerticalGroup(
+            nextPrevTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(nextPrevTitleLayout.createSequentialGroup()
+                .addContainerGap(18, Short.MAX_VALUE)
+                .addGroup(nextPrevTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(monthPrevButton)
                     .addComponent(monthNextButton)
-                    .addComponent(monthPrevButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(todayPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(daysOfMonth, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(monthLabel))
                 .addContainerGap())
         );
+
+        javax.swing.GroupLayout CalendarPanelLayout = new javax.swing.GroupLayout(CalendarPanel);
+        CalendarPanel.setLayout(CalendarPanelLayout);
+        CalendarPanelLayout.setHorizontalGroup(
+            CalendarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(CalendarPanelLayout.createSequentialGroup()
+                .addGap(80, 80, 80)
+                .addGroup(CalendarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nextPrevTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(daysOfMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(34, 34, 34)
+                .addComponent(todayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(156, Short.MAX_VALUE))
+        );
+        CalendarPanelLayout.setVerticalGroup(
+            CalendarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(CalendarPanelLayout.createSequentialGroup()
+                .addGap(45, 45, 45)
+                .addGroup(CalendarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(todayPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CalendarPanelLayout.createSequentialGroup()
+                        .addComponent(nextPrevTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(1, 1, 1)
+                        .addComponent(daysOfMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(144, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(CalendarPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 0, 1560, 1040));
+
+        MENU_PANEL.setBackground(new java.awt.Color(214, 20, 223));
+
+        calendarButton.setText("Calendar");
+        calendarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                calendarButtonActionPerformed(evt);
+            }
+        });
+
+        booksButton.setText("BOOKS");
+        booksButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                booksButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout MENU_PANELLayout = new javax.swing.GroupLayout(MENU_PANEL);
+        MENU_PANEL.setLayout(MENU_PANELLayout);
+        MENU_PANELLayout.setHorizontalGroup(
+            MENU_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(calendarButton, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(booksButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        MENU_PANELLayout.setVerticalGroup(
+            MENU_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(MENU_PANELLayout.createSequentialGroup()
+                .addGap(142, 142, 142)
+                .addComponent(calendarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
+                .addComponent(booksButton, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(724, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(MENU_PANEL, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 400, 1040));
+
+        booksPanel.setBackground(new java.awt.Color(214, 217, 0));
+
+        javax.swing.GroupLayout booksPanelLayout = new javax.swing.GroupLayout(booksPanel);
+        booksPanel.setLayout(booksPanelLayout);
+        booksPanelLayout.setHorizontalGroup(
+            booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1553, Short.MAX_VALUE)
+        );
+        booksPanelLayout.setVerticalGroup(
+            booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1075, Short.MAX_VALUE)
+        );
+
+        getContentPane().add(booksPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 0, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -808,7 +976,7 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_tuesday3ActionPerformed
 
     private void saturday3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saturday3ActionPerformed
-        
+
         createNewDayGui(saturday3);
     }//GEN-LAST:event_saturday3ActionPerformed
 
@@ -935,6 +1103,7 @@ public class MainGUI extends javax.swing.JFrame {
     private void monthNextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_monthNextButtonActionPerformed
         currentDate.changeCurrentMonth(1);
         prepareDaysInterface(this.listofDays);
+
     }//GEN-LAST:event_monthNextButtonActionPerformed
 
     private void monthPrevButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_monthPrevButtonActionPerformed
@@ -978,6 +1147,18 @@ public class MainGUI extends javax.swing.JFrame {
         createNewDayGui(saturday6);
     }//GEN-LAST:event_saturday6ActionPerformed
 
+    private void calendarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calendarButtonActionPerformed
+        CalendarPanel.setVisible(true);
+
+    }//GEN-LAST:event_calendarButtonActionPerformed
+
+    private void booksButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_booksButtonActionPerformed
+        CalendarPanel.setVisible(false);
+    }//GEN-LAST:event_booksButtonActionPerformed
+
+    private void CalendarPanelKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CalendarPanelKeyPressed
+    }//GEN-LAST:event_CalendarPanelKeyPressed
+
     /**
      * @param args the command line arguments
      */
@@ -1015,7 +1196,14 @@ public class MainGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel CalendarPanel;
+    private javax.swing.JPanel MENU_PANEL;
+    private javax.swing.JButton booksButton;
+    private javax.swing.JPanel booksPanel;
+    private javax.swing.JButton calendarButton;
     private javax.swing.JPanel daysOfMonth;
+    private javax.swing.JLabel eventsLabel;
+    private javax.swing.JTextArea eventsTextArea;
     private javax.swing.JLabel fifthDay;
     private javax.swing.JLabel firstDay;
     private javax.swing.JLabel forthDay;
@@ -1025,8 +1213,10 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JButton friday4;
     private javax.swing.JButton friday5;
     private javax.swing.JButton friday6;
+    private javax.swing.JLabel goalsLabel;
+    private javax.swing.JTextArea goalsTextArea;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton monday1;
     private javax.swing.JButton monday2;
     private javax.swing.JButton monday3;
@@ -1036,6 +1226,7 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JLabel monthLabel;
     private javax.swing.JButton monthNextButton;
     private javax.swing.JButton monthPrevButton;
+    private javax.swing.JPanel nextPrevTitle;
     private javax.swing.JLabel ninethday;
     private javax.swing.JButton saturday1;
     private javax.swing.JButton saturday2;
@@ -1061,6 +1252,7 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JLabel todayDateLabel;
     private javax.swing.JLabel todayLabel;
     private javax.swing.JPanel todayPanel;
+    private javax.swing.JPanel todayTitlePanel;
     private javax.swing.JButton tuesday1;
     private javax.swing.JButton tuesday2;
     private javax.swing.JButton tuesday3;
