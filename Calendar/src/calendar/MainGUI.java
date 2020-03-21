@@ -5,11 +5,13 @@
  */
 package calendar;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.util.ArrayList;
-import java.util.Arrays;
-import javax.swing.JButton;
+import java.awt.*;
+import java.sql.*;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -19,9 +21,12 @@ public class MainGUI extends javax.swing.JFrame {
 
     public CurrentDate currentDate;
     public JButton[] listofDays;
+    private Connection con = null;
+    private Statement statement = null;
 
     public MainGUI() {
         initComponents();
+        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         currentDate = new CurrentDate();
         JButton[] listOfDays = {monday1, tuesday1, wednesday1, thursday1, friday1,
             saturday1, sunday1, monday2, tuesday2, wednesday2, thursday2, friday2,
@@ -39,6 +44,20 @@ public class MainGUI extends javax.swing.JFrame {
         todayDateLabel.setText(currentDate.getDayNum() + "/" + currentDate.getCurrentMonth() + "/" + currentDate.getCurrentYear());
 
         setTodayGoalsAndEvents();
+
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/calendar?useUnicode=true"
+                    + "&characterEncoding=utf8",
+                    "root", "");
+
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println("Main.Gui de veri tabanina baglanilamadi");
+        }
+        setBookTable();
+        booksTable.setVisible(false);
+        booksPanel.setVisible(false);
 
     }
 
@@ -144,6 +163,41 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }
 
+    public void setBookTable() {
+
+        String sorgu = "select * from books ";
+        try {
+            statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sorgu);
+            int counter = 0;
+
+            while (rs.next()) {
+                counter++; // this conter help to understand database size
+            }
+            rs = statement.executeQuery(sorgu);
+            String[][] obj = new String[counter][4];
+            int row = 0, col = 0;
+
+            while (rs.next()) {
+
+                obj[row][col++] = rs.getString("name");
+                obj[row][col++] = rs.getString("author");
+                obj[row][col++] = rs.getString("pageAmount");
+                obj[row][col++] = rs.getString("date");
+                col = 0;
+                row++;
+            }
+            
+            booksTable.setModel(new DefaultTableModel(obj, new String[]{
+                "Name", "Author", "PageAmount", "Date"
+            }));
+
+        } catch (SQLException ex) {
+            System.out.println("veri tabanından verileri cekerken hata olustu.");
+        }
+
+    }
+
     private void setButtonsName(ArrayList<JButton> button, CurrentDate currentDate) {
 
         int dayNum = Integer.parseInt(currentDate.getDayNum());
@@ -164,9 +218,9 @@ public class MainGUI extends javax.swing.JFrame {
     private void createNewDayGui(JButton button) {
 
         String day = button.getText();
-
+        
         if (!day.equals("")) {
-            DayGUI gui = new DayGUI(currentDate.getDayNum(), currentDate.getMonth(), currentDate.getYear());
+            DayGUI gui = new DayGUI(day, currentDate.getMonth(), currentDate.getYear());
             gui.buildGoals();
         }
 
@@ -250,14 +304,18 @@ public class MainGUI extends javax.swing.JFrame {
         calendarButton = new javax.swing.JButton();
         booksButton = new javax.swing.JButton();
         booksPanel = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        booksTable = new javax.swing.JTable();
+        addNewBookButton = new javax.swing.JButton();
+        refleshButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Calendar");
         setBackground(new java.awt.Color(204, 255, 255));
         setForeground(java.awt.Color.white);
-        setMinimumSize(new java.awt.Dimension(1920, 1080));
-        setPreferredSize(new java.awt.Dimension(1920, 1080));
-        setResizable(false);
+        setMaximumSize(new java.awt.Dimension(500, 500));
+        setMinimumSize(new java.awt.Dimension(500, 500));
+        setPreferredSize(new java.awt.Dimension(1920, 1000));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         CalendarPanel.setBackground(new java.awt.Color(250, 250, 250));
@@ -919,15 +977,59 @@ public class MainGUI extends javax.swing.JFrame {
 
         booksPanel.setBackground(new java.awt.Color(214, 217, 0));
 
+        booksTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Name", "author", "pageAmount", "date"
+            }
+        ));
+        jScrollPane3.setViewportView(booksTable);
+
+        addNewBookButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        addNewBookButton.setText("Add New Book");
+        addNewBookButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addNewBookButtonActionPerformed(evt);
+            }
+        });
+
+        refleshButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        refleshButton.setText("Refresh Table ");
+        refleshButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refleshButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout booksPanelLayout = new javax.swing.GroupLayout(booksPanel);
         booksPanel.setLayout(booksPanelLayout);
         booksPanelLayout.setHorizontalGroup(
             booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1553, Short.MAX_VALUE)
+            .addGroup(booksPanelLayout.createSequentialGroup()
+                .addGap(89, 89, 89)
+                .addGroup(booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(booksPanelLayout.createSequentialGroup()
+                        .addComponent(refleshButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(addNewBookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 1208, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(707, Short.MAX_VALUE))
         );
         booksPanelLayout.setVerticalGroup(
             booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1075, Short.MAX_VALUE)
+            .addGroup(booksPanelLayout.createSequentialGroup()
+                .addGap(67, 67, 67)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 704, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
+                .addGroup(booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(refleshButton)
+                    .addComponent(addNewBookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(217, Short.MAX_VALUE))
         );
 
         getContentPane().add(booksPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 0, -1, -1));
@@ -1149,15 +1251,27 @@ public class MainGUI extends javax.swing.JFrame {
 
     private void calendarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calendarButtonActionPerformed
         CalendarPanel.setVisible(true);
+        booksTable.setVisible(false);
+        booksPanel.setVisible(false);
 
     }//GEN-LAST:event_calendarButtonActionPerformed
 
     private void booksButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_booksButtonActionPerformed
         CalendarPanel.setVisible(false);
+        booksTable.setVisible(true);
+        booksPanel.setVisible(true);
     }//GEN-LAST:event_booksButtonActionPerformed
 
     private void CalendarPanelKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CalendarPanelKeyPressed
     }//GEN-LAST:event_CalendarPanelKeyPressed
+
+    private void addNewBookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addNewBookButtonActionPerformed
+        AddBook addBook = new AddBook();
+    }//GEN-LAST:event_addNewBookButtonActionPerformed
+
+    private void refleshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refleshButtonActionPerformed
+        setBookTable(); // refreshing book table ... 
+    }//GEN-LAST:event_refleshButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1198,8 +1312,10 @@ public class MainGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel CalendarPanel;
     private javax.swing.JPanel MENU_PANEL;
+    private javax.swing.JButton addNewBookButton;
     private javax.swing.JButton booksButton;
     private javax.swing.JPanel booksPanel;
+    private javax.swing.JTable booksTable;
     private javax.swing.JButton calendarButton;
     private javax.swing.JPanel daysOfMonth;
     private javax.swing.JLabel eventsLabel;
@@ -1217,6 +1333,7 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JTextArea goalsTextArea;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton monday1;
     private javax.swing.JButton monday2;
     private javax.swing.JButton monday3;
@@ -1228,6 +1345,7 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JButton monthPrevButton;
     private javax.swing.JPanel nextPrevTitle;
     private javax.swing.JLabel ninethday;
+    private javax.swing.JButton refleshButton;
     private javax.swing.JButton saturday1;
     private javax.swing.JButton saturday2;
     private javax.swing.JButton saturday3;

@@ -166,6 +166,7 @@ public class DayGUI extends javax.swing.JFrame {
         
     }
 
+
     public void setGoalsElementsToJList(JList<String> list, String filePath) {
 
         // this function set elements from string array to Jlist
