@@ -31,7 +31,7 @@ public class AddBook extends javax.swing.JFrame {
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/calendar?useUnicode=true"
                     + "&characterEncoding=utf8"
-            ,"root","");
+            ,"root","root");
             dataBaseStatus.setBackground(Color.GREEN);            
         } catch (Exception e) {            
             dataBaseStatus.setBackground(Color.red);
@@ -42,7 +42,7 @@ public class AddBook extends javax.swing.JFrame {
     ,String date ){
         try {
             statement = con.createStatement();
-            String sorgu = "INSERT INTO `books` (`id`, `name`, "
+            String sorgu = "INSERT INTO `books` (`booksId`, `name`, "
                     + "`author`, `pageAmount`, `date`) VALUES (NULL, '"+name +"','"
                     +author+"','"+pageAmount+"','"+date+"')";           
             statement.executeUpdate(sorgu);
