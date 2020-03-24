@@ -197,6 +197,17 @@ public class MainGUI extends javax.swing.JFrame {
         }
 
     }
+    private void deleteBook(int bookID){
+        try {
+            statement = con.createStatement();
+            String sorgu = "delete from books where booksId ="+ Integer.toString(
+            bookID)+";";
+            statement.executeUpdate(sorgu); // exequting  query ...
+        }
+        catch(SQLException ex){
+            System.out.println("kitap silinemedi");
+        }
+    }
 
     private void setButtonsName(ArrayList<JButton> button, CurrentDate currentDate) {
 
@@ -300,14 +311,19 @@ public class MainGUI extends javax.swing.JFrame {
         monthLabel = new javax.swing.JLabel();
         monthPrevButton = new javax.swing.JButton();
         monthNextButton = new javax.swing.JButton();
+        addNewHabitButton = new javax.swing.JButton();
         MENU_PANEL = new javax.swing.JPanel();
         calendarButton = new javax.swing.JButton();
         booksButton = new javax.swing.JButton();
+        habitButton = new javax.swing.JButton();
         booksPanel = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         booksTable = new javax.swing.JTable();
         addNewBookButton = new javax.swing.JButton();
         refleshButton = new javax.swing.JButton();
+        deleteBookButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        habitPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Calendar");
@@ -316,7 +332,6 @@ public class MainGUI extends javax.swing.JFrame {
         setMaximumSize(new java.awt.Dimension(500, 500));
         setMinimumSize(new java.awt.Dimension(500, 500));
         setPreferredSize(new java.awt.Dimension(1920, 1000));
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         CalendarPanel.setBackground(new java.awt.Color(250, 250, 250));
         CalendarPanel.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -912,6 +927,8 @@ public class MainGUI extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        addNewHabitButton.setText("Add a new habbit ");
+
         javax.swing.GroupLayout CalendarPanelLayout = new javax.swing.GroupLayout(CalendarPanel);
         CalendarPanel.setLayout(CalendarPanelLayout);
         CalendarPanelLayout.setHorizontalGroup(
@@ -919,10 +936,13 @@ public class MainGUI extends javax.swing.JFrame {
             .addGroup(CalendarPanelLayout.createSequentialGroup()
                 .addGap(80, 80, 80)
                 .addGroup(CalendarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(nextPrevTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(daysOfMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(34, 34, 34)
-                .addComponent(todayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addNewHabitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(CalendarPanelLayout.createSequentialGroup()
+                        .addGroup(CalendarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nextPrevTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(daysOfMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(34, 34, 34)
+                        .addComponent(todayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(122, Short.MAX_VALUE))
         );
         CalendarPanelLayout.setVerticalGroup(
@@ -935,10 +955,10 @@ public class MainGUI extends javax.swing.JFrame {
                         .addComponent(nextPrevTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(1, 1, 1)
                         .addComponent(daysOfMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(135, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(addNewHabitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(48, Short.MAX_VALUE))
         );
-
-        getContentPane().add(CalendarPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 0, 1560, 1040));
 
         MENU_PANEL.setBackground(new java.awt.Color(214, 20, 223));
 
@@ -956,24 +976,32 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
 
+        habitButton.setText("Add a habit");
+        habitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                habitButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout MENU_PANELLayout = new javax.swing.GroupLayout(MENU_PANEL);
         MENU_PANEL.setLayout(MENU_PANELLayout);
         MENU_PANELLayout.setHorizontalGroup(
             MENU_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(calendarButton, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(calendarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(booksButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(habitButton, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         MENU_PANELLayout.setVerticalGroup(
             MENU_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(MENU_PANELLayout.createSequentialGroup()
                 .addGap(142, 142, 142)
                 .addComponent(calendarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
+                .addGap(30, 30, 30)
                 .addComponent(booksButton, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(724, Short.MAX_VALUE))
+                .addGap(31, 31, 31)
+                .addComponent(habitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(622, Short.MAX_VALUE))
         );
-
-        getContentPane().add(MENU_PANEL, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 400, 1040));
 
         booksPanel.setBackground(new java.awt.Color(214, 217, 0));
 
@@ -1006,33 +1034,85 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
 
+        deleteBookButton.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
+        deleteBookButton.setText("Delete this book");
+        deleteBookButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBookButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 24)); // NOI18N
+        jLabel1.setText("----------------Books i have read-----------------");
+
         javax.swing.GroupLayout booksPanelLayout = new javax.swing.GroupLayout(booksPanel);
         booksPanel.setLayout(booksPanelLayout);
         booksPanelLayout.setHorizontalGroup(
             booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(booksPanelLayout.createSequentialGroup()
-                .addGap(89, 89, 89)
-                .addGroup(booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(booksPanelLayout.createSequentialGroup()
-                        .addComponent(refleshButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(addNewBookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 1208, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(707, Short.MAX_VALUE))
+                        .addGap(87, 87, 87)
+                        .addGroup(booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(booksPanelLayout.createSequentialGroup()
+                                .addComponent(refleshButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(deleteBookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(252, 252, 252)
+                                .addComponent(addNewBookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 1208, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(booksPanelLayout.createSequentialGroup()
+                        .addGap(422, 422, 422)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 512, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(709, Short.MAX_VALUE))
         );
         booksPanelLayout.setVerticalGroup(
             booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(booksPanelLayout.createSequentialGroup()
-                .addGap(67, 67, 67)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, booksPanelLayout.createSequentialGroup()
+                .addContainerGap(63, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 704, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31)
                 .addGroup(booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(refleshButton)
-                    .addComponent(addNewBookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(217, Short.MAX_VALUE))
+                    .addGroup(booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(addNewBookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(deleteBookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(137, 137, 137))
         );
 
-        getContentPane().add(booksPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 0, -1, -1));
+        habitPanel.setBackground(new java.awt.Color(24, 10, 31));
+
+        javax.swing.GroupLayout habitPanelLayout = new javax.swing.GroupLayout(habitPanel);
+        habitPanel.setLayout(habitPanelLayout);
+        habitPanelLayout.setHorizontalGroup(
+            habitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 2620, Short.MAX_VALUE)
+        );
+        habitPanelLayout.setVerticalGroup(
+            habitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1075, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(MENU_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(booksPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CalendarPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addComponent(habitPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(MENU_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(booksPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(CalendarPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(habitPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -1253,6 +1333,7 @@ public class MainGUI extends javax.swing.JFrame {
         CalendarPanel.setVisible(true);
         booksTable.setVisible(false);
         booksPanel.setVisible(false);
+        habitPanel.setVisible(false);
 
     }//GEN-LAST:event_calendarButtonActionPerformed
 
@@ -1260,6 +1341,7 @@ public class MainGUI extends javax.swing.JFrame {
         CalendarPanel.setVisible(false);
         booksTable.setVisible(true);
         booksPanel.setVisible(true);
+        habitPanel.setVisible(false);
     }//GEN-LAST:event_booksButtonActionPerformed
 
     private void CalendarPanelKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CalendarPanelKeyPressed
@@ -1272,6 +1354,21 @@ public class MainGUI extends javax.swing.JFrame {
     private void refleshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refleshButtonActionPerformed
         setBookTable(); // refreshing book table ... 
     }//GEN-LAST:event_refleshButtonActionPerformed
+
+    private void habitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_habitButtonActionPerformed
+        CalendarPanel.setVisible(false);
+        booksTable.setVisible(false);
+        booksPanel.setVisible(false);
+        habitPanel.setVisible(true);
+    }//GEN-LAST:event_habitButtonActionPerformed
+
+    private void deleteBookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBookButtonActionPerformed
+        int index  = booksTable.getSelectedRow();
+        if(index!= -1){
+            deleteBook(index+1);
+        }       
+        
+    }//GEN-LAST:event_deleteBookButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1313,11 +1410,13 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JPanel CalendarPanel;
     private javax.swing.JPanel MENU_PANEL;
     private javax.swing.JButton addNewBookButton;
+    private javax.swing.JButton addNewHabitButton;
     private javax.swing.JButton booksButton;
     private javax.swing.JPanel booksPanel;
     private javax.swing.JTable booksTable;
     private javax.swing.JButton calendarButton;
     private javax.swing.JPanel daysOfMonth;
+    private javax.swing.JButton deleteBookButton;
     private javax.swing.JLabel eventsLabel;
     private javax.swing.JTextArea eventsTextArea;
     private javax.swing.JLabel fifthDay;
@@ -1331,6 +1430,9 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JButton friday6;
     private javax.swing.JLabel goalsLabel;
     private javax.swing.JTextArea goalsTextArea;
+    private javax.swing.JButton habitButton;
+    private javax.swing.JPanel habitPanel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
