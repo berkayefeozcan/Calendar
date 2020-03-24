@@ -50,7 +50,7 @@ public class MainGUI extends javax.swing.JFrame {
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/calendar?useUnicode=true"
                     + "&characterEncoding=utf8",
-                    "root", "");
+                    "root", "root");
 
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println("Main.Gui de veri tabanina baglanilamadi");
@@ -192,7 +192,7 @@ public class MainGUI extends javax.swing.JFrame {
                 "Name", "Author", "PageAmount", "Date"
             }));
 
-        } catch (SQLException ex) {
+        } catch (Exception ex ) {
             System.out.println("veri tabanından verileri cekerken hata olustu.");
         }
 
@@ -923,7 +923,7 @@ public class MainGUI extends javax.swing.JFrame {
                     .addComponent(daysOfMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(34, 34, 34)
                 .addComponent(todayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addContainerGap(122, Short.MAX_VALUE))
         );
         CalendarPanelLayout.setVerticalGroup(
             CalendarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -935,7 +935,7 @@ public class MainGUI extends javax.swing.JFrame {
                         .addComponent(nextPrevTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(1, 1, 1)
                         .addComponent(daysOfMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(144, Short.MAX_VALUE))
+                .addContainerGap(135, Short.MAX_VALUE))
         );
 
         getContentPane().add(CalendarPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 0, 1560, 1040));
