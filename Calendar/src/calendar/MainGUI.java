@@ -21,8 +21,9 @@ public class MainGUI extends javax.swing.JFrame {
 
     public CurrentDate currentDate;
     public JButton[] listofDays;
-    private Connection con = null;
-    private Statement statement = null;
+    private static Connection con = null;
+    private static Statement statement = null;
+    private static String[][] dataBaseString;
 
     public MainGUI() {
         initComponents();
@@ -46,7 +47,7 @@ public class MainGUI extends javax.swing.JFrame {
         setTodayGoalsAndEvents();
 
         try {
-
+            // connecting clendar database 
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/calendar?useUnicode=true"
                     + "&characterEncoding=utf8",
@@ -55,7 +56,7 @@ public class MainGUI extends javax.swing.JFrame {
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println("Main.Gui de veri tabanina baglanilamadi");
         }
-        setBookTable();
+        setBookTable(booksTable);
         booksTable.setVisible(false);
         booksPanel.setVisible(false);
 
@@ -163,48 +164,61 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }
 
-    public void setBookTable() {
+    public static void setBookTable(JTable table) {
 
         String sorgu = "select * from books ";
         try {
             statement = con.createStatement();
             ResultSet rs = statement.executeQuery(sorgu);
             int counter = 0;
-
+            
             while (rs.next()) {
                 counter++; // this conter help to understand database size
             }
+            dataBaseString = new String[counter][5];
+
             rs = statement.executeQuery(sorgu);
-            String[][] obj = new String[counter][4];
+
             int row = 0, col = 0;
 
             while (rs.next()) {
-
-                obj[row][col++] = rs.getString("name");
-                obj[row][col++] = rs.getString("author");
-                obj[row][col++] = rs.getString("pageAmount");
-                obj[row][col++] = rs.getString("date");
+                dataBaseString[row][col++] = rs.getString("booksId");
+                dataBaseString[row][col++] = rs.getString("name");
+                dataBaseString[row][col++] = rs.getString("author");
+                dataBaseString[row][col++] = rs.getString("pageAmount");
+                dataBaseString[row][col++] = rs.getString("date");
                 col = 0;
                 row++;
             }
-            
-            booksTable.setModel(new DefaultTableModel(obj, new String[]{
-                "Name", "Author", "PageAmount", "Date"
+
+            table.setModel(new DefaultTableModel(dataBaseString, new String[]{
+                "ID", "Name", "Author", "PageAmount", "Date"
             }));
 
-        } catch (Exception ex ) {
+        } catch (Exception ex) {
             System.out.println("veri tabanından verileri cekerken hata olustu.");
+        }
+        //******************** id resetting ******************************
+        int rowAmout = dataBaseString.length;        
+        if (rowAmout == 0) {
+            System.out.println("idler 0larınır");
+            try {
+                statement.executeQuery("truncate books;");
+            } catch (SQLException ex) {
+                System.out.println("idler sifirlanamadi.");
+            }
         }
 
     }
-    private void deleteBook(int bookID){
+
+    private void deleteBook(int bookID) {
         try {
             statement = con.createStatement();
-            String sorgu = "delete from books where booksId ="+ Integer.toString(
-            bookID)+";";
-            statement.executeUpdate(sorgu); // exequting  query ...
-        }
-        catch(SQLException ex){
+            String sorgu = "delete from books where booksId =" + Integer.toString(
+                    bookID) + ";";
+            statement.executeUpdate(sorgu); // exequting  query ...            
+
+        } catch (SQLException ex) {
             System.out.println("kitap silinemedi");
         }
     }
@@ -229,7 +243,7 @@ public class MainGUI extends javax.swing.JFrame {
     private void createNewDayGui(JButton button) {
 
         String day = button.getText();
-        
+
         if (!day.equals("")) {
             DayGUI gui = new DayGUI(day, currentDate.getMonth(), currentDate.getYear());
             gui.buildGoals();
@@ -934,7 +948,7 @@ public class MainGUI extends javax.swing.JFrame {
         CalendarPanelLayout.setHorizontalGroup(
             CalendarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(CalendarPanelLayout.createSequentialGroup()
-                .addGap(80, 80, 80)
+                .addGap(157, 157, 157)
                 .addGroup(CalendarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(addNewHabitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(CalendarPanelLayout.createSequentialGroup()
@@ -943,7 +957,7 @@ public class MainGUI extends javax.swing.JFrame {
                             .addComponent(daysOfMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(34, 34, 34)
                         .addComponent(todayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(122, Short.MAX_VALUE))
+                .addContainerGap(159, Short.MAX_VALUE))
         );
         CalendarPanelLayout.setVerticalGroup(
             CalendarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -989,7 +1003,7 @@ public class MainGUI extends javax.swing.JFrame {
             MENU_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(calendarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(booksButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(habitButton, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(habitButton, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
         );
         MENU_PANELLayout.setVerticalGroup(
             MENU_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1050,21 +1064,20 @@ public class MainGUI extends javax.swing.JFrame {
         booksPanelLayout.setHorizontalGroup(
             booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(booksPanelLayout.createSequentialGroup()
+                .addGap(149, 149, 149)
                 .addGroup(booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(booksPanelLayout.createSequentialGroup()
+                            .addComponent(refleshButton)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(deleteBookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(252, 252, 252)
+                            .addComponent(addNewBookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 1208, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(booksPanelLayout.createSequentialGroup()
-                        .addGap(87, 87, 87)
-                        .addGroup(booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(booksPanelLayout.createSequentialGroup()
-                                .addComponent(refleshButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(deleteBookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(252, 252, 252)
-                                .addComponent(addNewBookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 1208, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(booksPanelLayout.createSequentialGroup()
-                        .addGap(422, 422, 422)
+                        .addGap(335, 335, 335)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 512, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(709, Short.MAX_VALUE))
+                .addContainerGap(647, Short.MAX_VALUE))
         );
         booksPanelLayout.setVerticalGroup(
             booksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1101,9 +1114,10 @@ public class MainGUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(MENU_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(booksPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CalendarPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(CalendarPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(booksPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(habitPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
@@ -1348,11 +1362,11 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_CalendarPanelKeyPressed
 
     private void addNewBookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addNewBookButtonActionPerformed
-        AddBook addBook = new AddBook();
+        AddBook addBook = new AddBook(booksTable);
     }//GEN-LAST:event_addNewBookButtonActionPerformed
 
     private void refleshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refleshButtonActionPerformed
-        setBookTable(); // refreshing book table ... 
+        setBookTable(booksTable); // refreshing book table ... 
     }//GEN-LAST:event_refleshButtonActionPerformed
 
     private void habitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_habitButtonActionPerformed
@@ -1363,11 +1377,12 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_habitButtonActionPerformed
 
     private void deleteBookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBookButtonActionPerformed
-        int index  = booksTable.getSelectedRow();
-        if(index!= -1){
-            deleteBook(index+1);
-        }       
-        
+        int index = booksTable.getSelectedRow();
+        int tableIndex = Integer.parseInt(dataBaseString[index][0]);
+        if (tableIndex != -1 & index != -1) {
+            deleteBook(tableIndex);
+        }
+        setBookTable(booksTable);
     }//GEN-LAST:event_deleteBookButtonActionPerformed
 
     /**
