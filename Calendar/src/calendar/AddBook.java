@@ -21,74 +21,25 @@ import javax.swing.JTable;
  */
 public class AddBook extends javax.swing.JFrame {
 
-    private Connection con = null;
-    private Statement statement = null;
+  
     private JTable booksTable;
-
+    private DataBase dataBase = new DataBase();
+   
     public AddBook(JTable booksTable) {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2
                 - this.getSize().height / 2); //appear centered.
         initComponents();
         setVisible(true);
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/calendar?useUnicode=true"
-                    + "&characterEncoding=utf8",
-                    "root", "root");
-            dataBaseStatus.setBackground(Color.GREEN);
-        } catch (Exception e) {
-            dataBaseStatus.setBackground(Color.red);
-        }
+        
         this.booksTable = booksTable;
     }
-
-    public void addNewBooktoDataBase(String name, String author, String pageAmount,
+    
+    public   void addNewBooktoDataBase(String name, String author, String pageAmount,
             String date) {
         JFrame messageBox = new JFrame();
-        try {
-            Integer.parseInt(pageAmount);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(messageBox, "pageAmount must be integer",
-                    "Alert", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        String[] splitedDate = date.split("-");        
-        if (splitedDate.length == 1) {
-            JOptionPane.showMessageDialog(messageBox, "date formate must be Year-"
-                    + "Mounth-Day", "Alert", JOptionPane.WARNING_MESSAGE);
-            return;
-
-        }
-         int year;
-         int mounth ;
-         int day ;
-        try {
-            year= Integer.parseInt(splitedDate[0]);
-            mounth = Integer.parseInt(splitedDate[1]);
-            day = Integer.parseInt(splitedDate[2]);
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(messageBox, "date formate must be Year-"
-                    + "Mounth-Day", "Alert", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        if ( !(0 <= year) |!(1 <= mounth & mounth <= 12) | !(1 <= day & day <= 31) ) {
-            JOptionPane.showMessageDialog(messageBox, "date formate must be Year-"
-                    + "Mounth-Day", "Alert", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        try {
-            statement = con.createStatement();
-            String sorgu = "INSERT INTO `books` (`booksId`, `name`, "
-                    + "`author`, `pageAmount`, `date`) VALUES (NULL, '" + name + "','"
-                    + author + "','" + pageAmount + "','" + date + "')";
-            statement.executeUpdate(sorgu);
-        } catch (SQLException ex) {
-            Logger.getLogger(AddBook.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        boolean result =dataBase.addNewBooktoDataBase(messageBox, name, author, pageAmount, date);
+        if(result)
         dispose(); // this window will death.
     }
 

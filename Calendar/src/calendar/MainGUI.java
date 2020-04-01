@@ -6,12 +6,8 @@
 package calendar;
 
 import java.awt.*;
-import java.sql.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -21,10 +17,8 @@ public class MainGUI extends javax.swing.JFrame {
 
     public CurrentDate currentDate;
     public JButton[] listofDays;
-    private static Connection con = null;
-    private static Statement statement = null;
-    private static String[][] dataBaseString;
-
+    private static  String[][] dataBaseString;
+    private static DataBase dataBase = new DataBase();
     public MainGUI() {
         initComponents();
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
@@ -45,17 +39,6 @@ public class MainGUI extends javax.swing.JFrame {
         todayDateLabel.setText(currentDate.getDayNum() + "/" + currentDate.getCurrentMonth() + "/" + currentDate.getCurrentYear());
 
         setTodayGoalsAndEvents();
-
-        try {
-            // connecting clendar database 
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/calendar?useUnicode=true"
-                    + "&characterEncoding=utf8",
-                    "root", "root");
-
-        } catch (ClassNotFoundException | SQLException e) {
-            System.out.println("Main.Gui de veri tabanina baglanilamadi");
-        }
         setBookTable(booksTable);
         booksTable.setVisible(false);
         booksPanel.setVisible(false);
@@ -164,64 +147,9 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }
 
-    public static void setBookTable(JTable table) {
+    
 
-        String sorgu = "select * from books ";
-        try {
-            statement = con.createStatement();
-            ResultSet rs = statement.executeQuery(sorgu);
-            int counter = 0;
-            
-            while (rs.next()) {
-                counter++; // this conter help to understand database size
-            }
-            dataBaseString = new String[counter][5];
-
-            rs = statement.executeQuery(sorgu);
-
-            int row = 0, col = 0;
-
-            while (rs.next()) {
-                dataBaseString[row][col++] = rs.getString("booksId");
-                dataBaseString[row][col++] = rs.getString("name");
-                dataBaseString[row][col++] = rs.getString("author");
-                dataBaseString[row][col++] = rs.getString("pageAmount");
-                dataBaseString[row][col++] = rs.getString("date");
-                col = 0;
-                row++;
-            }
-
-            table.setModel(new DefaultTableModel(dataBaseString, new String[]{
-                "ID", "Name", "Author", "PageAmount", "Date"
-            }));
-
-        } catch (Exception ex) {
-            System.out.println("veri tabanından verileri cekerken hata olustu.");
-        }
-        //******************** id resetting ******************************
-        int rowAmout = dataBaseString.length;        
-        if (rowAmout == 0) {
-            System.out.println("idler 0larınır");
-            try {
-                statement.executeQuery("truncate books;");
-            } catch (SQLException ex) {
-                System.out.println("idler sifirlanamadi.");
-            }
-        }
-
-    }
-
-    private void deleteBook(int bookID) {
-        try {
-            statement = con.createStatement();
-            String sorgu = "delete from books where booksId =" + Integer.toString(
-                    bookID) + ";";
-            statement.executeUpdate(sorgu); // exequting  query ...            
-
-        } catch (SQLException ex) {
-            System.out.println("kitap silinemedi");
-        }
-    }
+  
 
     private void setButtonsName(ArrayList<JButton> button, CurrentDate currentDate) {
 
@@ -245,10 +173,15 @@ public class MainGUI extends javax.swing.JFrame {
         String day = button.getText();
 
         if (!day.equals("")) {
-            DayGUI gui = new DayGUI(day, currentDate.getMonth(), currentDate.getYear());
-            gui.buildGoals();
+          //  DayGUI gui = new DayGUI(day, currentDate.getMonth(), currentDate.getYear());
+          String [] temp = currentDate.getFormatedDate().split("-");
+          DayGUI gui = new DayGUI(day, temp[1],temp[0]);
+          gui.buildGoals();
         }
 
+    }
+    public static void setBookTable(JTable booksTable){
+       dataBaseString = dataBase.setBookTable(booksTable);
     }
 
     /**
@@ -343,9 +276,7 @@ public class MainGUI extends javax.swing.JFrame {
         setTitle("Calendar");
         setBackground(new java.awt.Color(204, 255, 255));
         setForeground(java.awt.Color.white);
-        setMaximumSize(new java.awt.Dimension(500, 500));
         setMinimumSize(new java.awt.Dimension(500, 500));
-        setPreferredSize(new java.awt.Dimension(1920, 1000));
 
         CalendarPanel.setBackground(new java.awt.Color(250, 250, 250));
         CalendarPanel.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1332,7 +1263,7 @@ public class MainGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         createNewDayGui(wednesday6);
     }//GEN-LAST:event_wednesday6ActionPerformed
-
+  
     private void tuesday6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tuesday6ActionPerformed
         // TODO add your handling code here:
         createNewDayGui(tuesday6);
@@ -1366,7 +1297,8 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_addNewBookButtonActionPerformed
 
     private void refleshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refleshButtonActionPerformed
-        setBookTable(booksTable); // refreshing book table ... 
+        setBookTable(booksTable); // refreshing book table ...
+        
     }//GEN-LAST:event_refleshButtonActionPerformed
 
     private void habitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_habitButtonActionPerformed
@@ -1377,10 +1309,18 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_habitButtonActionPerformed
 
     private void deleteBookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBookButtonActionPerformed
-        int index = booksTable.getSelectedRow();
-        int tableIndex = Integer.parseInt(dataBaseString[index][0]);
+        int tableIndex=-1;
+        int index=-1;
+        try {
+            index = booksTable.getSelectedRow();
+            tableIndex = Integer.parseInt(dataBaseString[index][0]);
+        }
+        catch(Exception ex){
+            System.out.println("tabloda seçilen bir şey bulunamadı");
+        }
+
         if (tableIndex != -1 & index != -1) {
-            deleteBook(tableIndex);
+            dataBase.deleteBook(tableIndex);
         }
         setBookTable(booksTable);
     }//GEN-LAST:event_deleteBookButtonActionPerformed
