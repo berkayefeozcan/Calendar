@@ -29,16 +29,24 @@ public class DayGUI extends javax.swing.JFrame {
     private String goalsFilePath;
     private String thoughtsFilePath;
     private String eventsFilePath;
-    public static ArrayList<String> eventsArrayList;
-    public static ArrayList<String> dailyGoalsArrayList;
-    private JListManupilation eventJListManupilation;
-    private JListManupilation dailyGoalsJListManupilation;
+    public  ArrayList<String> eventsArrayList;
+    public  ArrayList<String> dailyGoalsArrayList;
+    public  EventsDateBaseManipulation eventsDateBaseManipulation;
+    private DataBase database = new DataBase();
+    private String currentDate ;
+  
 
     public DayGUI(String day, String month, String year) {
-
+        
         eventsArrayList = new ArrayList<String>();
         dailyGoalsArrayList = new ArrayList<String>();
-
+        if( ! day.contains("0")){
+            day = Integer.parseInt(day)<10 ? "0"+day :day;
+        }
+         currentDate = year+"-"+month+"-"+day+" "+"00:00:00";
+        
+        eventsDateBaseManipulation = new EventsDateBaseManipulation(currentDate);
+        eventsDateBaseManipulation.setVisible(false);
         initComponents();
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -53,12 +61,6 @@ public class DayGUI extends javax.swing.JFrame {
         this.thoughtsFilePath = temp + "thougths.txt";
         this.eventsFilePath = temp + "events.txt";
         buildGoals();
-
-        eventJListManupilation = new EventsManipulation( eventsFilePath, eventsJList);
-        eventJListManupilation.setVisible(false);
-        dailyGoalsJListManupilation = new DailyGoalsManipulation(goalsFilePath, dailyGoalsJList);
-        dailyGoalsJListManupilation.setVisible(false);
-
         this.setVisible(true);
 
         removeEvntButton.addActionListener(new ActionListener() {
@@ -92,6 +94,7 @@ public class DayGUI extends javax.swing.JFrame {
 
             }
         });
+       
 
     }
 
@@ -134,7 +137,9 @@ public class DayGUI extends javax.swing.JFrame {
     public void setEventElementsToJList(JList<String> list, String filePath) {
 
         // this function set elements from string array to Jlist
-        eventsArrayList = FileWriterAndReader.readStringArray(filePath);
+        
+        System.out.println(currentDate);
+        eventsArrayList = database.readEvents(currentDate);
 
         String[] arr;
         if (eventsArrayList.isEmpty()) {
@@ -223,6 +228,8 @@ public class DayGUI extends javax.swing.JFrame {
         eventLabel = new javax.swing.JLabel();
         dailyGoalsLabel = new javax.swing.JLabel();
         saveButton = new javax.swing.JButton();
+        doneButton = new javax.swing.JButton();
+        unDoneButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -242,7 +249,7 @@ public class DayGUI extends javax.swing.JFrame {
         jPanel1.add(removeEvntButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 450, -1, -1));
 
         removeGoalsButton.setText("Remove goals");
-        jPanel1.add(removeGoalsButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 450, -1, -1));
+        jPanel1.add(removeGoalsButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 460, -1, -1));
 
         addEventButton.setText("Add Events");
         addEventButton.addActionListener(new java.awt.event.ActionListener() {
@@ -268,7 +275,7 @@ public class DayGUI extends javax.swing.JFrame {
                 addGoalsButtonActionPerformed(evt);
             }
         });
-        jPanel1.add(addGoalsButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 450, -1, -1));
+        jPanel1.add(addGoalsButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 460, -1, -1));
 
         dailyGoalsJList.setBackground(new java.awt.Color(242, 238, 203));
         dailyGoalsJList.setModel(new javax.swing.AbstractListModel<String>() {
@@ -333,13 +340,31 @@ public class DayGUI extends javax.swing.JFrame {
         });
         jPanel1.add(saveButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 460, 100, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1120, 520));
+        doneButton.setBackground(new java.awt.Color(62, 241, 20));
+        doneButton.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
+        doneButton.setForeground(new java.awt.Color(255, 255, 255));
+        doneButton.setText("done");
+        doneButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                doneButtonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(doneButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 450, 90, -1));
+
+        unDoneButton.setBackground(new java.awt.Color(248, 11, 11));
+        unDoneButton.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
+        unDoneButton.setForeground(new java.awt.Color(255, 255, 255));
+        unDoneButton.setText("un done");
+        jPanel1.add(unDoneButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 450, 130, -1));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1120, 560));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
-
+        unDoneButton.setVisible(false);
+        doneButton.setVisible(false);
         thoughtsScrollPane.setVisible(false);
         thoughtsTextArea.setVisible(false);
 
@@ -368,18 +393,24 @@ public class DayGUI extends javax.swing.JFrame {
         FileWriterAndReader.write(thoughtsEditTextArea.getText(), thoughtsFilePath);
         saveButton.setVisible(false);
         editButton.setVisible(true);
+        unDoneButton.setVisible(true);
+        doneButton.setVisible(true);
         buildGoals();
 
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void addGoalsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addGoalsButtonActionPerformed
-        dailyGoalsJListManupilation.setVisible(true);
+
     }//GEN-LAST:event_addGoalsButtonActionPerformed
 
     private void addEventButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEventButtonActionPerformed
-        eventJListManupilation.setVisible(true);
-
+        
+       eventsDateBaseManipulation.setVisible(true);
     }//GEN-LAST:event_addEventButtonActionPerformed
+
+    private void doneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doneButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_doneButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -391,6 +422,7 @@ public class DayGUI extends javax.swing.JFrame {
     private javax.swing.JList<String> dailyGoalsJList;
     private javax.swing.JLabel dailyGoalsLabel;
     private javax.swing.JScrollPane dailyGoalsListScrollPane;
+    private javax.swing.JButton doneButton;
     private javax.swing.JButton editButton;
     private javax.swing.JLabel eventLabel;
     private javax.swing.JList<String> eventsJList;
@@ -404,5 +436,6 @@ public class DayGUI extends javax.swing.JFrame {
     private javax.swing.JLabel thoughtsLabel;
     private javax.swing.JScrollPane thoughtsScrollPane;
     private javax.swing.JTextArea thoughtsTextArea;
+    private javax.swing.JButton unDoneButton;
     // End of variables declaration//GEN-END:variables
 }
