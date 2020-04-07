@@ -15,15 +15,24 @@ public class EventsDateBaseManipulation extends javax.swing.JFrame {
 
     private DataBase database = new DataBase();
     private String[] years = new String[100];
-    private String[] mounths = new String[12];
-    private String[] days = new String[31];
+    private String[] mounths ;
+    private String[] days ;
     private String[] hours = new String[25];
     private String[] minute = new String[61];
     private String startingDate;
+    private String startingYear;
+    private String startingMounth;
+    private String startingDay;
 
     public EventsDateBaseManipulation(String startingDate) {
         initComponents();
         this.startingDate = startingDate;
+        String [] temp = startingDate.split("-");
+        startingYear = temp[0];
+        startingMounth=temp[1];
+        String temp1[] = temp[2].split(" ");
+        startingDay=temp1[0];
+        
         if (!"".equals(startingDate)) {
             startingDateLabel.setVisible(false);
             startingDayComboBox.setVisible(false);
@@ -32,23 +41,29 @@ public class EventsDateBaseManipulation extends javax.swing.JFrame {
             startingHourComboBox.setVisible(false);
             startingMinuteComboBox.setVisible(false);
         }
+        
         int i;
+        int startingYearIndex=Integer.parseInt(startingYear);
+        int startingMounthIndex=Integer.parseInt(startingMounth);
+        int startingDayIndex=Integer.parseInt(startingDay);
+        days= new String[32-startingDayIndex];
+        mounths =new String[13-startingMounthIndex];
         for (i = 0; i < 100; i++) {
-            years[i] = Integer.toString(i + 2010);
+            years[i] = Integer.toString(i + startingYearIndex);
         }
-        for (i = 0; i < 31; i++) {
-            if (i < 10) {
-                days[i] = "0" + Integer.toString(i + 1);
+        for (i =0; i < 31-startingDayIndex+1; i++) {
+            if (i+startingDayIndex < 10) {
+                days[i] = "0" + Integer.toString(i+startingDayIndex);
             } else {
-                days[i] = Integer.toString(i + 1);
+                days[i] = Integer.toString(i+startingDayIndex);
             }
 
         }
-        for (i = 0; i < 12; i++) {
-            if (i < 10) {
-                mounths[i] = "0" + Integer.toString(i + 1);
+        for (i = 0; i < 12-startingMounthIndex+1; i++) {
+            if (i +startingMounthIndex< 10) {
+                mounths[i] = "0" + Integer.toString(i+startingMounthIndex );
             } else {
-                mounths[i] = Integer.toString(i + 1);
+                mounths[i] = Integer.toString(i+startingMounthIndex);
             }
 
         }
@@ -260,7 +275,7 @@ public class EventsDateBaseManipulation extends javax.swing.JFrame {
         String name = nameTextField.getText();
         String location = locationTextField.getText();
         boolean result = false;
-
+        
         String dueDate = dueYearComboBox.getSelectedItem().toString() + "-"
                 + dueMounthComboBox.getSelectedItem().toString() + "-"
                 + dueDayComboBox.getSelectedItem().toString() + " "

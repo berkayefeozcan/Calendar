@@ -138,7 +138,6 @@ public class DayGUI extends javax.swing.JFrame {
 
         // this function set elements from string array to Jlist
         
-        System.out.println(currentDate);
         eventsArrayList = database.readEvents(currentDate);
 
         String[] arr;
